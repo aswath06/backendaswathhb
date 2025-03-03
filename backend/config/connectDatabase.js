@@ -14,7 +14,7 @@ connection.connect((err) => {
     console.error("Database connection failed:", err.message);
     return;
   }
-  console.log("MySQL connected to host:", connection.config.host);
+  console.log("✅ MySQL connected to host:", connection.config.host);
 });
 
 module.exports = connection;

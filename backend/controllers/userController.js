@@ -29,10 +29,10 @@ exports.getSingleUser = (req, res) => {
 
 // Add a new user
 exports.createUser = (req, res) => {
-  const { name, role, password, advance, license_no, aadhaar_number, phone_number, address } = req.body;
-  const sql = "INSERT INTO users (name, role, password, advance, license_no, aadhaar_number, phone_number, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+  const { name, role, password, advance, license_no, aadhaar_number, phone_number, address,vechile_number,image_url } = req.body;
+  const sql = "INSERT INTO users (name, role, password, advance, license_no, aadhaar_number, phone_number, address, vechilenumber,image) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 
-  connection.query(sql, [name, role, password, advance, license_no, aadhaar_number, phone_number, address], (err, result) => {
+  connection.query(sql, [name, role, password, advance, license_no, aadhaar_number, phone_number, address, vechile_number, image_url], (err, result) => {
     if (err) {
       return res.status(500).json({ success: false, error: err.message });
     }
