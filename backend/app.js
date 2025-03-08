@@ -4,25 +4,30 @@ const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 
-// Load environment variables
+// ✅ Load environment variables
 dotenv.config({ path: path.join(__dirname, "config", "config.env") });
 
 const app = express();
 
-// Middleware
-app.use(express.json()); // ✅ Required for parsing JSON body
+// ✅ Middleware
+app.use(express.json()); // Parse JSON body
 app.use(cors());
 app.use(morgan("dev"));
 
-// Import routes
+// ✅ Import routes
 const vehicleRoutes = require("./routes/vehicles");
 const userRoutes = require("./routes/users");
 
-// ✅ Use routes correctly
-app.use("/api/v1", vehicleRoutes);
-app.use("/api/v1", userRoutes);
+// ✅ Use routes with proper prefixes
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/vehicles", vehicleRoutes);
 
-// Start server
+// ✅ Default route
+app.get("/", (req, res) => {
+  res.send("🚀 API is running...");
+});
+
+// ✅ Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
