@@ -37,6 +37,8 @@ exports.createUser = async (req, res) => {
 
     res.json({ success: true, message: "User added successfully", userId: result.rows[0].id });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
+    console.error("Error:", err);  // ✅ Logs the full error to the terminal
+    res.status(500).json({ success: false, error: err.stack || "Unknown error" });
+}
+
 };

@@ -42,6 +42,7 @@ exports.insertVehicle = async (req, res) => {
 
     res.status(201).json({ success: true, message: "Vehicle added successfully", vehicleId: result.rows[0].id });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error("Error:", err);  // ✅ Logs the full error to the terminal
+    res.status(500).json({ success: false, error: err.stack || "Unknown error" });
   }
 };
