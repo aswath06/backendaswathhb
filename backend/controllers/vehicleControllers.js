@@ -1,16 +1,18 @@
 const pool = require("../config/connectDatabase");
 
-// Get all vehicles
+// ✅ Get all vehicles
 exports.getVehicles = async (req, res) => {
   try {
+    console.log("📡 API Called: GET /vehicles");
     const result = await pool.query("SELECT * FROM vehicles");
     res.json({ success: true, vehicles: result.rows });
   } catch (err) {
+    console.error("❌ Error in getVehicles:", err);
     res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Get single vehicle by ID
+// ✅ Get single vehicle by ID
 exports.getSingleVehicle = async (req, res) => {
   try {
     const vehicleId = req.params.id;
@@ -22,13 +24,15 @@ exports.getSingleVehicle = async (req, res) => {
 
     res.json({ success: true, vehicle: result.rows[0] });
   } catch (err) {
+    console.error("❌ Error in getSingleVehicle:", err);
     res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Insert a new vehicle
+// ✅ Insert a new vehicle
 exports.insertVehicle = async (req, res) => {
   try {
+    console.log("📡 API Called: POST /vehicles");
     const { vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url } = req.body;
 
     if (!vechilenumber || !fc || !insurance || !driver || !pollution || !oil_service || !category || !totalkm || !image_url) {
@@ -42,7 +46,7 @@ exports.insertVehicle = async (req, res) => {
 
     res.status(201).json({ success: true, message: "Vehicle added successfully", vehicleId: result.rows[0].id });
   } catch (err) {
-    console.error("Error:", err);  // ✅ Logs the full error to the terminal
-    res.status(500).json({ success: false, error: err.stack || "Unknown error" });
+    console.error("❌ Error in insertVehicle:", err);
+    res.status(500).json({ success: false, error: err.message });
   }
 };
