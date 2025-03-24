@@ -33,7 +33,9 @@ exports.getSingleUser = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     console.log("📡 API Called: POST /users");
-    const { name, role, password, phone_number, advance, license_no, aadhaar_number, address, vechile_number, image } = req.body;
+    const { name, role, password, phone_number, advance, license_no, aadhaar_number, address, vechile_number } = req.body;
+    const { image_url } = req.body;
+    const image = image_url;
 
 
     if (!name || !role || !password || !phone_number) {
@@ -41,14 +43,15 @@ exports.createUser = async (req, res) => {
     }
 
     const sql = `INSERT INTO users 
-    (name, role, password, phone_number, advance, license_no, aadhaar_number, address, vechile_number, image) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`;
-  
-  const result = await pool.query(sql, [
-    name, role, password, phone_number, advance || 0, 
-    license_no || null, aadhaar_number || null, 
-    address || null, vechile_number || null, image || null
-  ]);
+  (name, role, password, phone_number, advance, license_no, aadhaar_number, address, vechile_number, image) 
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`;
+
+const result = await pool.query(sql, [
+  name, role, password, phone_number, advance || 0, 
+  license_no || null, aadhaar_number || null, 
+  address || null, vechile_number || null, image || null
+]);
+
   
 
     console.log("✅ User Created:", result.rows[0].id);
