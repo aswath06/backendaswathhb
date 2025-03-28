@@ -33,16 +33,20 @@ exports.getSingleVehicle = async (req, res) => {
 exports.insertVehicle = async (req, res) => {
   try {
     console.log("📡 API Called: POST /vehicles");
-    const { vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url } = req.body;
+    const { vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url, duty } = req.body;
 
-    if (!vechilenumber || !fc || !insurance || !driver || !pollution || !oil_service || !category || !totalkm || !image_url) {
+    if (!vechilenumber || !fc || !insurance || !driver || !pollution || !oil_service || !category || !totalkm || !image_url || !duty) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const sql = `INSERT INTO vehicles (vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`;
+    if (!["free", "working"].includes(duty)) {
+      return res.status(400).json({ success: false, message: "Invalid duty status" });
+    }
 
-    const result = await pool.query(sql, [vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url]);
+    const sql = `INSERT INTO vehicles (vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url, duty) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`;
+
+    const result = await pool.query(sql, [vechilenumber, fc, insurance, driver, pollution, oil_service, category, totalkm, image_url, duty]);
 
     res.status(201).json({ success: true, message: "Vehicle added successfully", vehicleId: result.rows[0].id });
   } catch (err) {
