@@ -33,7 +33,11 @@ exports.getSingleUser = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     console.log("📡 API Called: POST /users");
-    const { name, role, password, phone_number, advance, license_no, aadhaar_number, address, vechile_number, image_url } = req.body;
+    const { 
+      name, role, password, phone_number, advance, license_no, aadhaar_number, 
+      address, vechile_number, image_url, working, no_of_days_present 
+    } = req.body;
+
     const image = image_url;
 
     if (!name || !role || !password || !phone_number) {
@@ -41,13 +45,15 @@ exports.createUser = async (req, res) => {
     }
 
     const sql = `INSERT INTO users 
-      (name, role, password, phone_number, advance, license_no, aadhaar_number, address, vechile_number, image) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`;
+      (name, role, password, phone_number, advance, license_no, aadhaar_number, 
+       address, vechile_number, image, working, no_of_days_present) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id`;
 
     const result = await pool.query(sql, [
       name, role, password, phone_number, advance || 0, 
       license_no || null, aadhaar_number || null, 
-      address || null, vechile_number || null, image || null
+      address || null, vechile_number || null, image || null, 
+      working || "free", no_of_days_present || 0
     ]);
 
     console.log("✅ User Created:", result.rows[0].id);
@@ -63,7 +69,11 @@ exports.updateUser = async (req, res) => {
   try {
     console.log("📡 API Called: PUT /users/:id");
     const userId = req.params.id;
-    const { name, role, phone_number, advance, license_no, aadhaar_number, address, vechile_number, image_url } = req.body;
+    const { 
+      name, role, phone_number, advance, license_no, aadhaar_number, address, 
+      vechile_number, image_url, working, no_of_days_present 
+    } = req.body;
+
     const image = image_url;
 
     const sql = `UPDATE users SET 
@@ -75,12 +85,14 @@ exports.updateUser = async (req, res) => {
       aadhaar_number = COALESCE($6, aadhaar_number),
       address = COALESCE($7, address),
       vechile_number = COALESCE($8, vechile_number),
-      image = COALESCE($9, image)
-    WHERE id = $10 RETURNING *`;
+      image = COALESCE($9, image),
+      working = COALESCE($10, working),
+      no_of_days_present = COALESCE($11, no_of_days_present)
+    WHERE id = $12 RETURNING *`;
 
     const result = await pool.query(sql, [
-      name, role, phone_number, advance, license_no, 
-      aadhaar_number, address, vechile_number, image, userId
+      name, role, phone_number, advance, license_no, aadhaar_number, 
+      address, vechile_number, image, working, no_of_days_present, userId
     ]);
 
     if (result.rows.length === 0) {
